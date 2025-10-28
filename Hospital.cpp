@@ -138,6 +138,7 @@ struct Cita {
     hospital->pacientes[hospital->cantidad_Pacientes++] = nuevo_paciente;
     
     return &hospital->pacientes[hospital->cantidad_Pacientes - 1];
+
     
 }
 
@@ -147,6 +148,13 @@ struct Cita {
 
 
 
+int main() {
+    Hospital hospital;
+    hospital.siguienteIdPaciente = 1;
+    hospital.cantidad_Pacientes = 0;
+    hospital.capacidad_Pacientes_total = 100;
+    hospital.pacientes = new Paciente[hospital.capacidad_Pacientes_total];
+    
 
 
 
