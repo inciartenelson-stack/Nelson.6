@@ -1,29 +1,28 @@
 #include <iostream>
 #include <cstring>
 #include <ctime>
-#include <iosmanip>
+#include <iomanip>
 using namespace std;
 
 
-struct HospitalMedico {
+struct HistorialMedico {
     int idConsulta;
-    char fecha[11];
-    char hora[6];
+    char fecha[11];         
+    char hora[6];           
     char diagnostico[200];
     char tratamiento[200];
     char medicamentos[150];
     int idDoctor;
     float costo;
-
 };
 
-struct paciente {
+struct Paciente {
     int id;
     char nombre[50];
     char apellido[50];
     char cedula[20];
     int edad;
-    char sexo[10];
+    char sexo;
     char tipoSangre[5];
     char telefono[15];
     char direccion[100];
@@ -33,7 +32,7 @@ struct paciente {
     int cantidadConsultas;
     int capacidadHistorial;
     
-    int citasAgendadas;
+    int* citasAgendadas;
     int cantidadCitas;
     int capacidadCitas;
     
@@ -42,6 +41,7 @@ struct paciente {
     
     bool activo;
 };
+
 struct Doctor {
     int id;
     char nombre[50];
@@ -50,13 +50,13 @@ struct Doctor {
     char especialidad[50];
     int aniosExperiencia;
     float costoConsulta;
-    char horario[50];
+    char horarioAtencion[50];
     char telefono[15];
     char email[50];
     
-    int* pacientesAsignadosD;
-    int cantidadPacientesD;
-    int capacidadPacientesD;
+    int* pacientesAsignados;
+    int cantidadPacientes;
+    int capacidadPacientes;
     
     int* citasAgendadas;
     int cantidadCitas;
@@ -65,122 +65,136 @@ struct Doctor {
     bool disponible;
 };
 
-struct cita {
+struct Cita {
     int id;
-    int idPpaciente;
+    int idPaciente;
     int idDoctor;
     char fecha[11];
     char hora[6];
     char motivo[150];
-    char estado[20];
+    char estado[20];        
     char observaciones[200];
     bool atendida;
-  
-
-    };
+};
 
 struct Hospital {
     char nombre[100];
-    char direccion[200];
+    char direccion[150];
     char telefono[15];
-
+    
     Paciente* pacientes;
     int cantidadPacientes;
     int capacidadPacientes;
-
+    
     Doctor* doctores;
     int cantidadDoctores;
     int capacidadDoctores;
-
-    Citas* citas;
+    
+    Cita* citas;
     int cantidadCitas;
     int capacidadCitas;
-
-    int siguienteIDPaciente;
-    int siguienteIDDoctor;
-    int SiguienteIDCita;
-    int siguienteIDConsulta;
-    };
-
-
-    char* copiarString(const char* origen)  {
-        if (!origen) return nullptr;
-        size_t len = strlen (origen);
-        char* copia = new char [len + 1];
-        strcpy (copia, origen);
-        return copia;
-    }
     
-void toLower (char*str){
+    int siguienteIdPaciente;
+    int siguienteIdDoctor;
+    int siguienteIdCita;
+    int siguienteIdConsulta;
+};
+
+
+char* copiarString(const char* origen) {
+    if (!origen) return NULL;
+    size_t len = strlen(origen);
+    char* copia = new char[len + 1];
+    strcpy(copia, origen);
+    return copia;
+}
+
+
+void toLower(char* str) {
     for (int i = 0; str[i]; i++) {
-        if (str[i] >= 'A' && str[i] <= 'Z') {
+        if (str[i] >= 'A' && str[i] <= 'Z')
             str[i] = str[i] + 32;
     }
 }
+
+
+bool strEqualsIgnoreCase(const char* a, const char* b) {
+    if (!a || !b) return false;
+    char aLow[200], bLow[200];
+    strcpy(aLow, a);
+    strcpy(bLow, b);
+    toLower(aLow);
+    toLower(bLow);
+    return strcmp(aLow, bLow) == 0;
+}
+
+
+bool contiene(const char* cadena, const char* subcadena) {
+    if (!cadena || !subcadena) return false;
+    char cad[200], sub[200];
+    strcpy(cad, cadena);
+    strcpy(sub, subcadena);
+    toLower(cad);
+    toLower(sub);
+    return strstr(cad, sub) != NULL;
+}
+
+
+bool validarFecha(const char* fecha) {
+    if (!fecha || strlen(fecha) != 10) return false;
+    if (fecha[4] != '-' || fecha[7] != '-') return false;
+
+    for (int i = 0; i < 10; i++) {
+        if (i == 4 || i == 7) continue;
+        if (fecha[i] < '0' || fecha[i] > '9') return false;
     }
-    bool strEqualsIgnorease(const char* a, const char* b) {
-        if (a! || !b ) return false;
-        char aLow[200] , blow[200];
-        strcpy (aLow, a);
-        strcpy (bLow, b);
-        toLower (aLow);
-        toLower (bLow);
-        return strcmp (aLow, bLow) == 0;
+    int anio = (fecha[0]-'0')*1000 + (fecha[1]-'0')*100 + (fecha[2]-'0')*10 + (fecha[3]-'0');
+    int mes = (fecha[5]-'0')*10 + (fecha[6]-'0');
+    int dia = (fecha[8]-'0')*10 + (fecha[9]-'0');
+    if (mes < 1 || mes > 12) return false;
+    if (dia < 1 || dia > 31) return false;
+ 
+    if (mes == 2) return dia <= 29; 
+    if (mes == 4 || mes == 6 || mes == 9 || mes == 11) return dia <= 30;
+    return true;
+}
+
+
+bool validarHora(const char* hora) {
+    if (!hora || strlen(hora) != 5) return false;
+    if (hora[2] != ':') return false;
+    for (int i = 0; i < 5; i++) {
+        if (i == 2) continue;
+        if (hora[i] < '0' || hora[i] > '9') return false;
     }
-
-    bool contiene(const char* cadena,const char* subcadena){
-        if (!cadena || !subcadena) return false;
-        char cad[200], sub[200];
-        strcpy (cad, cadena);
-        strcpy (sub, subcadena);
-        toLower (cad);
-        toLower (sub);
-        return strstr (cad, sub) != nullptr;
-    }
-
-
-    bool ValidarFecha(const char*fecha){
-        if (!fecha || strlen (fecha) != 10) return false;
-        if (fecha[4] != '-' || fecha[7] != '-') return false;
-        }
-
-        for (int i = 0: i < 10; i++) {
-            if (i == 4 || i == 7) continue;
-            if (fecha[i] < '0' || fecha[i] > '9') return false;
-        
-        }
-
-        int anio = (fecha[0]-'0') * 1000 + (fecha[1]-'0') * 100 + (fecha[2]-'0') * 10 + (fecha[3]-'0');
-       int mes = (fecha[5]-'0') * 10 + (fecha[6]-'0');
-       int dia = (fecha[8]-'0') * 10 + (fecha[9]-'0');
-         if (mes < 1 || mes > 12) return false;
-         if (dia < 1 || dia > 31) return false;
-
-         if (mes == 2) return dia <= 29;
-            if (mes == 4 || mes == 6 || mes == 9 || mes == 11) return dia <= 30;
-            return true;
+    int h = (hora[0]-'0')*10 + (hora[1]-'0');
+    int m = (hora[3]-'0')*10 + (hora[4]-'0');
+    return (h >= 0 && h <= 23) && (m >= 0 && m <= 59);
+}
 
 
 bool verificarDisponibilidad(Hospital* hospital, int idDoctor, const char* fecha, const char* hora) {
     for (int i = 0; i < hospital->cantidadCitas; i++) {
         Cita* c = &hospital->citas[i];
-        if (c->idDoctor == idDoctor &&
-            strcmp(c->fecha, fecha) == 0 &&
+        if (c->idDoctor == idDoctor && 
+            strcmp(c->fecha, fecha) == 0 && 
             strcmp(c->hora, hora) == 0 &&
             strcmp(c->estado, "Agendada") == 0) {
-                return false;
-            }    
- 
+            return false; 
         }
-        return true;
     }
-    
-Hospital* inicializarHospital(const char* nombre, int capacidadInicial = 0) {
-    Hospital* h = new Hospital:
+    return true;
+}
+
+
+
+Hospital* inicializarHospital(const char* nombre, int capacidadInicial = 10) {
+    Hospital* h = new Hospital;
     strcpy(h->nombre, nombre);
     h->direccion[0] = '\0';
     h->telefono[0] = '\0';
-     h->pacientes = new Paciente[capacidadInicial];
+    
+    h->pacientes = new Paciente[capacidadInicial];
     h->capacidadPacientes = capacidadInicial;
     h->cantidadPacientes = 0;
     
@@ -199,6 +213,7 @@ Hospital* inicializarHospital(const char* nombre, int capacidadInicial = 0) {
     
     return h;
 }
+
 void destruirHospital(Hospital* hospital) {
     if (!hospital) return;
     
@@ -221,9 +236,6 @@ void destruirHospital(Hospital* hospital) {
     
     delete hospital;
 }
-
-
-
 
 
 
@@ -259,6 +271,9 @@ void redimensionarArrayCitas(Hospital* hospital) {
     hospital->citas = nuevoArray;
     hospital->capacidadCitas = nuevaCapacidad;
 }
+
+
+
 Paciente* buscarPacientePorCedula(Hospital* hospital, const char* cedula) {
     for (int i = 0; i < hospital->cantidadPacientes; i++) {
         if (strEqualsIgnoreCase(hospital->pacientes[i].cedula, cedula)) {
@@ -274,11 +289,8 @@ Paciente* buscarPacientePorId(Hospital* hospital, int id) {
             return &hospital->pacientes[i];
         }
     }
-    return nullptr;
+    return NULL;
 }
-
-
-
 
 Paciente** buscarPacientesPorNombre(Hospital* hospital, const char* nombre, int* cantidad) {
     *cantidad = 0;
@@ -292,7 +304,7 @@ Paciente** buscarPacientesPorNombre(Hospital* hospital, const char* nombre, int*
             (*cantidad)++;
         }
     }
-    if (*cantidad == 0) return nullptr;
+    if (*cantidad == 0) return NULL;
     
     Paciente** resultados = new Paciente*[*cantidad];
     int idx = 0;
@@ -308,19 +320,19 @@ Paciente** buscarPacientesPorNombre(Hospital* hospital, const char* nombre, int*
     return resultados;
 }
 
- Paciente* crearPaciente(Hospital* hospital, const char* nombre, const char* apellido,
+Paciente* crearPaciente(Hospital* hospital, const char* nombre, const char* apellido,
                         const char* cedula, int edad, char sexo) {
     if (buscarPacientePorCedula(hospital, cedula)) {
         cout << "Error: Cedula ya registrada.\n";
-        return nullptr;
+        return NULL;
     }
     if (edad < 0 || edad > 120) {
         cout << "Error: Edad invalida.\n";
-        return nullptr;
+        return NULL;
     }
     if (sexo != 'M' && sexo != 'F') {
         cout << "Error: Sexo debe ser 'M' o 'F'.\n";
-        return nullptr;
+        return NULL;
     }
     
     if (hospital->cantidadPacientes >= hospital->capacidadPacientes) {
@@ -415,7 +427,7 @@ Doctor* buscarDoctorPorId(Hospital* hospital, int id) {
             return &hospital->doctores[i];
         }
     }
-    return nullptr;
+    return NULL;
 }
 
 Doctor** buscarDoctoresPorEspecialidad(Hospital* hospital, const char* especialidad, int* cantidad) {
@@ -425,7 +437,7 @@ Doctor** buscarDoctoresPorEspecialidad(Hospital* hospital, const char* especiali
             (*cantidad)++;
         }
     }
-    if (*cantidad == 0) return nullptr;
+    if (*cantidad == 0) return NULL;
     
     Doctor** resultados = new Doctor*[*cantidad];
     int idx = 0;
@@ -442,11 +454,11 @@ Doctor* crearDoctor(Hospital* hospital, const char* nombre, const char* apellido
                     float costoConsulta) {
     if (aniosExperiencia < 0) {
         cout << "Error: Anios de experiencia invÃ¡lidos.\n";
-        return nullptr;
+        return NULL;
     }
     if (costoConsulta <= 0) {
         cout << "Error: Costo de consulta debe ser positivo.\n";
-        return nullptr;
+        return NULL;
     }
     
     if (hospital->cantidadDoctores >= hospital->capacidadDoctores) {
@@ -476,7 +488,8 @@ Doctor* crearDoctor(Hospital* hospital, const char* nombre, const char* apellido
     
     hospital->cantidadDoctores++;
     return d;
-}   
+}
+
 bool asignarPacienteADoctor(Doctor* doctor, int idPaciente) {
   
     for (int i = 0; i < doctor->cantidadPacientes; i++) {
@@ -504,7 +517,7 @@ void listarDoctores(Hospital* hospital) {
         return;
     }
     cout << "================================================================================================\n";
-    cout << "== ID  == NOMBRE COMPLETO    == ESPECIALIDAD       == COSTO CONSULTA   ==\n";
+    cout << "== ID  == NOMBRE COMPLETO     == ESPECIALIDAD       == COSTO CONSULTA   ==\n";
     cout << "================================================================================================\n";
     for (int i = 0; i < hospital->cantidadDoctores; i++) {
         Doctor* d = &hospital->doctores[i];
@@ -517,7 +530,7 @@ void listarDoctores(Hospital* hospital) {
 }
 
 // ================================
-// GESTION DE CITAS
+// GESTIÃ“N DE CITAS
 // ================================
 
 Cita* agendarCita(Hospital* hospital, int idPaciente, int idDoctor,
@@ -526,15 +539,15 @@ Cita* agendarCita(Hospital* hospital, int idPaciente, int idDoctor,
     Doctor* d = buscarDoctorPorId(hospital, idDoctor);
     if (!p || !d) {
         cout << "Error: Paciente o doctor no encontrado.\n";
-        return nullptr;
+        return NULL;
     }
     if (!validarFecha(fecha) || !validarHora(hora)) {
         cout << "Error: Fecha u hora invalida.\n";
-        return nullptr;
+        return NULL;
     }
     if (!verificarDisponibilidad(hospital, idDoctor, fecha, hora)) {
         cout << "Error: El doctor no esta disponible en esa fecha/hora.\n";
-        return nullptr;
+        return NULL;
     }
     
     if (hospital->cantidadCitas >= hospital->capacidadCitas) {
@@ -618,7 +631,7 @@ bool atenderCita(Hospital* hospital, int idCita, const char* diagnostico,
 
 void listarCitasPendientes(Hospital* hospital) {
     bool hay = false;
-    cout << "==============================================================================================================================\n";
+    cout << "\==============================================================================================================================\n";
     cout << "== ID  == PACIENTE     == DOCTOR     == FECHA      == MOTIVO                           ==\n";
     cout << "==============================================================================================================================\n";
     for (int i = 0; i < hospital->cantidadCitas; i++) {
@@ -792,7 +805,7 @@ void menuDoctores(Hospital* hospital) {
 void menuCitas(Hospital* hospital) {
     int opcion;
     do {
-        cout << "==============================================================================================================================\n";
+        cout << "\==============================================================================================================================\n";
         cout << "==           GESTION DE CITAS           ==\n";
         cout << "===============================================================================================================================\n";
         cout << "== 1. Agendar nueva cita                ==\n";
@@ -866,13 +879,3 @@ int main() {
     destruirHospital(hospital);
     return 0;
 }
-
-
-
-
-
-
-    
-
-
-
