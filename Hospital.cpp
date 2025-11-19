@@ -858,7 +858,7 @@ int main() {
     int opcion;
     do {
         cout << "========================================================================================================================\n";
-        cout << "==   SISTEMA DE GESTION HOSPITALARIA     ==\n";
+        cout << "==   SISTEMA DE GESTION HOSPITALARIA    ==\n";
         cout << "======================================================================================================================\n";
         cout << "1. Gestion de Pacientes\n";
         cout << "2. Gestion de Doctores\n";
