@@ -10,7 +10,7 @@
 using namespace std;
 
 // ======================================================================
-//  ESTRUCTURAS DE DATOS (según Proyecto 2)
+//  ESTRUCTURAS DE DATOS 
 // ======================================================================
 
 struct ArchivoHeader {
@@ -117,7 +117,7 @@ struct HistorialMedico {
 };
 
 // ======================================================================
-//  FUNCIONES DE VALIDACIÓN
+//  FUNCIONES DE VALIDACION
 // ======================================================================
 
 bool esNombreValido(const char* nombre) {
@@ -157,7 +157,7 @@ bool validarFecha(const char* fecha) {
         if (dia > 30) return false;
     }
     if (mes == 2) {
-        bool esBisiesto = (anio % 4 == 0 && anio % 100 != 0) || (anio % 400 == 0);
+        bool esBisiesto = (anio % 4 == 0 && anio % 100 != 0) || (anio % 2000 == 0);
         if (esBisiesto) {
             if (dia > 29) return false;
         } else {
@@ -279,8 +279,8 @@ Hospital* cargarDatosHospital() {
     
     if (!verificarArchivo("hospital.bin")) {
         fstream archivo("hospital.bin", ios::binary | ios::out);
-        strcpy(h->nombre, "Hospital Central Urdaneta");
-        strcpy(h->direccion, "Av. Universidad, Maracaibo");
+        strcpy(h->nombre, "Hospital Falcon");
+        strcpy(h->direccion, "Av. 8 Santa Rita, Maracaibo");
         strcpy(h->telefono, "0261-1234567");
         h->siguienteIDPaciente = 1;
         h->siguienteIDDoctor = 1;
@@ -344,15 +344,15 @@ bool agregarPaciente(Hospital* h, const char* nombre, const char* apellido,
                      const char* cedula, int edad, char sexo,
                      const char* telefono, const char* email) {
     if (!esNombreValido(nombre)) {
-        cout << "Error: El nombre no debe contener numeros ni símbolos.\n";
+        cout << "Error: El nombre no debe contener numeros ni simbolos.\n";
         return false;
     }
     if (!esNombreValido(apellido)) {
-        cout << "Error: El apellido no debe contener numeros ni símbolos.\n";
+        cout << "Error: El apellido no debe contener numeros ni simbolos.\n";
         return false;
     }
     if (!esCedulaValida(cedula)) {
-        cout << "Error: La cédula debe contener solo digitos.\n";
+        cout << "Error: La cedula debe contener solo digitos.\n";
         return false;
     }
     if (edad < 0 || edad > 120) {
@@ -364,11 +364,11 @@ bool agregarPaciente(Hospital* h, const char* nombre, const char* apellido,
         return false;
     }
     if (strlen(telefono) < 7 || strlen(telefono) > 15) {
-        cout << "Error: Telefono debe tener entre 7 y 15 dígitos.\n";
+        cout << "Error: Telefono debe tener entre 7 y 15 digitos.\n";
         return false;
     }
     if (!validarEmail(email)) {
-        cout << "Error: Formato de email inválido.\n";
+        cout << "Error: Formato de email invalido.\n";
         return false;
     }
     
@@ -640,9 +640,9 @@ void mostrarHistorialMedico(int pacienteID) {
     }
     
     cout << "\n--------------------------------------------------------------------------------\n";
-    cout << "¦                                HISTORIAL MÉDICO                                ¦\n";
+    cout << "¦                                HISTORIAL MEDICO                                ¦\n";
     cout << "¦--------------------------------------------------------------------------------¦\n";
-    cout << "¦ ID   ¦ FECHA      ¦ HORA   ¦ DIAGNÓSTICO                                      ¦\n";
+    cout << "¦ ID   ¦ FECHA      ¦ HORA   ¦ DIAGNOSTICO                                      ¦\n";
     cout << "¦------+------------+--------+---------------------------------------------------¦\n";
     for (int i = 0; i < cantidad; i++) {
         cout << "¦ " << setw(4) << historial[i].id
@@ -684,19 +684,19 @@ bool agregarDoctor(Hospital* h, const char* nombre, const char* apellido,
                    int aniosExperiencia, float costoConsulta,
                    const char* telefono, const char* email) {
     if (!esNombreValido(nombre)) {
-        cout << "Error: El nombre no debe contener números ni símbolos.\n";
+        cout << "Error: El nombre no debe contener numeros ni simbolos.\n";
         return false;
     }
     if (!esNombreValido(apellido)) {
-        cout << "Error: El apellido no debe contener números ni símbolos.\n";
+        cout << "Error: El apellido no debe contener numeros ni simbolos.\n";
         return false;
     }
     if (!esCedulaValida(cedula)) {
-        cout << "Error: La cédula debe contener solo dígitos.\n";
+        cout << "Error: La cedula debe contener solo digitos.\n";
         return false;
     }
     if (aniosExperiencia < 0) {
-        cout << "Error: Años de experiencia no pueden ser negativos.\n";
+        cout << "Error: Anios de experiencia no pueden ser negativos.\n";
         return false;
     }
     if (costoConsulta <= 0) {
@@ -704,11 +704,11 @@ bool agregarDoctor(Hospital* h, const char* nombre, const char* apellido,
         return false;
     }
     if (strlen(telefono) < 7 || strlen(telefono) > 15) {
-        cout << "Error: Teléfono debe tener entre 7 y 15 dígitos.\n";
+        cout << "Error: Telefono debe tener entre 7 y 15 digitos.\n";
         return false;
     }
     if (!validarEmail(email)) {
-        cout << "Error: Formato de email inválido.\n";
+        cout << "Error: Formato de email invalido.\n";
         return false;
     }
     
@@ -726,7 +726,7 @@ bool agregarDoctor(Hospital* h, const char* nombre, const char* apellido,
     }
     archivo.close();
     if (cedulaRepetida) {
-        cout << "Error: Cédula profesional ya registrada.\n";
+        cout << "Error: Cedula profesional ya registrada.\n";
         return false;
     }
     
@@ -877,7 +877,7 @@ bool agregarCita(Hospital* h, int idPaciente, int idDoctor,
     }
     
     if (!validarFecha(fecha) || !validarHora(hora)) {
-        cout << "Error: Fecha u hora inválida.\n";
+        cout << "Error: Fecha u hora invalida.\n";
         return false;
     }
     
@@ -995,7 +995,7 @@ bool atenderCita(Hospital* h, int idCita, const char* diagnostico,
     hist.costo = d.costoConsulta;
     
     if (!agregarConsultaAlHistorial(h, c.pacienteID, hist)) {
-        cout << "Error: No se pudo agregar al historial médico.\n";
+        cout << "Error: No se pudo agregar al historial medico.\n";
         return false;
     }
     
@@ -1044,7 +1044,7 @@ void listarCitasPendientes() {
 }
 
 // ======================================================================
-//  MENÚS Y FUNCIÓN PRINCIPAL
+//  MENUS Y FUNCION PRINCIPAL
 // ======================================================================
 
 void menuPacientes(Hospital* h) {
@@ -1060,7 +1060,7 @@ void menuPacientes(Hospital* h) {
             int edad; char sexo;
             cout << "Nombre: "; cin.getline(nombre, 50);
             cout << "Apellido: "; cin.getline(apellido, 50);
-            cout << "Cedula (solo números): "; cin.getline(cedula, 20);
+            cout << "Cedula (solo numeros): "; cin.getline(cedula, 20);
             cout << "Edad: "; cin >> edad;
             cout << "Sexo (M/F): "; cin >> sexo;
             cout << "Telefono: "; cin.ignore(); cin.getline(telefono, 15);
@@ -1071,7 +1071,7 @@ void menuPacientes(Hospital* h) {
             Paciente p = leerPacientePorID(id);
             if (p.id != -1) {
                 cout << "Paciente: " << p.nombre << " " << p.apellido << "\n";
-                cout << "Cédula: " << p.cedula << ", Edad: " << p.edad << "\n";
+                cout << "Cedula: " << p.cedula << ", Edad: " << p.edad << "\n";
             } else {
                 cout << "Paciente no encontrado.\n";
             }
@@ -1105,7 +1105,7 @@ void menuDoctores(Hospital* h) {
             cout << "Apellido: "; cin.getline(apellido, 50);
             cout << "Cedula: "; cin.getline(cedula, 20);
             cout << "Especialidad: "; cin.getline(especialidad, 50);
-            cout << "Años experiencia: "; cin >> exp;
+            cout << "Anios experiencia: "; cin >> exp;
             cout << "Costo consulta: "; cin >> costo;
             cout << "Telefono: "; cin.ignore(); cin.getline(telefono, 15);
             cout << "Email: "; cin.getline(email, 50);
@@ -1144,7 +1144,7 @@ void menuCitas(Hospital* h) {
             int id;
             char diag[200], trat[200], meds[150];
             cout << "ID Cita: "; cin >> id;
-            cout << "Diagnóstico: "; cin.ignore(); cin.getline(diag, 200);
+            cout << "Diagnostico: "; cin.ignore(); cin.getline(diag, 200);
             cout << "Tratamiento: "; cin.getline(trat, 200);
             cout << "Medicamentos: "; cin.getline(meds, 150);
             atenderCita(h, id, diag, trat, meds);
@@ -1163,7 +1163,7 @@ int main() {
         cout << "¦   SISTEMA DE GESTION HOSPITALARIA v2   ¦\n";
         cout << "----------------------------------------\n";
         cout << "1. Gestion de Pacientes\n2. Gestion de Doctores\n3. Gestion de Citas\n4. Salir\n";
-        cout << "Opción: ";
+        cout << "Opcion: ";
         cin >> op;
         if (op == 1) menuPacientes(h);
         else if (op == 2) menuDoctores(h);
