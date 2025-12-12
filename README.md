@@ -13,17 +13,17 @@ El código está organizado en módulos por dominio de responsabilidad:
 
 ProyectoHospital_v3/
 │
-├── hospital/                   # Información general del hospital y contadores de ID
-├── pacientes/                  # Clase Paciente + operaciones (registro, búsqueda, etc.)
-├── doctores/                   # Clase Doctor + operaciones
-├── citas/                      # Clase Cita + operaciones
-├── historial/                  # Clase HistorialMedico + operaciones
-├── persistencia/               # GestorArchivos: operaciones genéricas de archivos binarios
-├── utilidades/                 # Validaciones y formatos reutilizables
+├── hospital/                   
+├── pacientes/                 
+├── doctores/                  
+├── citas/                      
+├── historial/                  
+├── persistencia/              
+├── utilidades/                 
 │
-├── main.cpp                    # Menú principal (solo llama a operaciones, sin lógica de negocio)
-├── compilar.bat                # Script para compilar en Windows (reemplazo de Makefile)
-└── datos/                      # Carpeta generada en ejecución (archivos .bin)
+├── main.cpp                    
+├── compilar.bat               
+└── datos/                     
 
 ✅ Cada módulo es autocontenido: todo lo relacionado con pacientes está en pacientes/, lo mismo para doctores, citas, etc.
 
