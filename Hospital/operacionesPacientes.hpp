@@ -1,0 +1,17 @@
+#ifndef OPERACIONES_PACIENTES_HPP
+#define OPERACIONES_PACIENTES_HPP
+
+#include "../hospital/Hospital.hpp"
+#include "Paciente.hpp"
+
+// Declaraciones de funciones de operaciones con pacientes
+void registrarPaciente(Hospital& hospital);
+void buscarPacientePorID();
+void buscarPacientePorCedula();
+void modificarPaciente();
+void eliminarPaciente();
+void listarTodosPacientes();
+void verHistorialPaciente();
+void menuGestionPacientes(Hospital& hospital);
+
+#endif
